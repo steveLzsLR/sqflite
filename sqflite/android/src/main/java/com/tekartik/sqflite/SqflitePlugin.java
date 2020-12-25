@@ -428,14 +428,14 @@ public class SqflitePlugin implements FlutterPlugin, MethodCallHandler {
 
         Cursor cursor = null;
         // Read both the changes and last insert row id in on sql call
-        String sql = "SELECT changes(), last_insert_rowid()";
+        String sql = "SELECT ?,?";
 
         // Handle ON CONFLICT but ignore error, issue #164
         // Read the number of changes before getting the inserted id
         try {
             SQLiteDatabase db = database.getWritableDatabase();
-
-            cursor = db.rawQuery(sql, null);
+            String [] args = {"changes()","last_insert_rowid()"};
+            cursor = db.rawQuery(sql, args);
             if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
                 final int changed = cursor.getInt(0);
 
@@ -585,8 +585,8 @@ public class SqflitePlugin implements FlutterPlugin, MethodCallHandler {
         Cursor cursor = null;
         try {
             SQLiteDatabase db = database.getWritableDatabase();
-
-            cursor = db.rawQuery("SELECT changes()", null);
+            String [] args = {"changes()"};
+            cursor = db.rawQuery("SELECT ?", args);
             if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
                 final int changed = cursor.getInt(0);
                 if (LogLevel.hasSqlLevel(database.logLevel)) {
